@@ -1,0 +1,88 @@
+step00 br(if notEXEC then step00)
+step01 br(case(LD, ST, SUB, AND, NOT, BLSS, BNCR, BGRTU, BNEG, JLEQ, LOOPGRE, JMP, 
+	JSR, HALT, RTS, RTI, ASL, ROLC, PUSHGPR, POPGPR) then	
+	(LD, step02), (ST, step04), (SUB, step0B), (AND, step0D), (NOT, step0F), (BLSS, step11), 
+	(BNCR, step11), (BGRTU, step11), (BNEG, step11), (JLEQ, step11), (LOOPGRE, step13),
+	(JMP, step16), (JSR, step17), (HALT, step1D), (RTS, step1E), (RTI, step24), (ASL, step2A), (ROLC, step2B),
+	(PUSHGPR, step2C), (POPGPR, step34))
+//--------LD--------
+step02 ldA
+step03 ldN, ldZ, br step3E
+//--------ST--------
+step04 br(if regdir then step0A)
+step05 ldMDR, mxMDR0
+step06 wrMEM, br(if notFCBUS then step06)
+step07 ldMDR, mxMDR1, incMAR
+step08 wrMEM, br(if notFCBUS then step08)
+step09 br step3E
+//=======REG=======
+step0A wrGPR, mxGPR0, br step3E
+//-------SUB--------
+step0B sub, ldV, ldA, mxGPR1
+step0C ldN, ldZ, br step3E
+//-------AND--------
+step0D ldA, mxGPR1, and
+step0E ldN, ldZ, br step3E
+//-------NOT--------
+step0F ldA, mxGPR1, not
+step10 ldN, ldZ, br step3E
+//-------BLSS, BNCR, BGRTU, BNEG, JLEQ-------
+step11 br(if notbrorjump then step3E)
+step12 ldPC, mxGPR0, mxGPR1, br step3E
+//-------LOOPGRE----
+step13 decA
+step14 br(if notbrorjump then step3E)
+step15 ldPC, mxGPR2, br step3E
+//-------JMP--------
+step16 ldPC, mxGPR0, mxGPR1, br step3E
+//-------JSR--------
+step17 decSP, ldMDR, mxMDR, mxMDR1
+step18 ldMAR, mxMAR0, mxMAR2, decSP
+step19 wrMEM, br(if notFCBUS then step19)
+step1A ldMAR, mxMAR0, mxMAR2, ldMDR, mxMDR2
+step1B wrMEM, br(if notFCBUS then step1B)
+step1C ldPC, mxGPR2, br step3E
+//------HALT--------
+step1D clPSWSTART, br step3E
+//------RTS---------
+step1E ldMAR, mxMAR0, mxMAR2, incSP
+step1F rdMEM, ldMDR, br(if notFCBUS then step1F)
+step20 ldDWL, ldMAR, maxMAR0, mxMAR2, incSP
+step21 rdMEM, ldMDR, br(if notFCBUS then step21)
+step22 ldDWH
+step23 ldPC, mxGPR0, mxGPR2, br step3E
+//------RTI--------
+step24 ldMAR, mxMAR0, mxMAR2, incSP
+step25 rdMEM, ldMDR, br(if notFCBUS then step25)
+step26 ldDWL, ldMAR, mxMAR0, mxMAR2, incSP
+step27 rdMEM, ldMDR, br(if notFCBUS then step27)
+step28 ldDWH
+step29 
+//------ASL--------
+step2A slA, ldN, ldZ, ldC, br step3E
+//------ROLC-------
+step2B slA, ldC, ldN, ldZ, br step3E
+//------PUSHGPR----
+step2C clSC
+step2D br(if SC16 then step3E)
+step2E decSP, ldMDR, mxMDR0, mxMDR1, mxMDR2, mxSC1
+step2F ldMAR, mxMAR0, mxMAR2, decSP
+step30 wrMEM, br(if notFCBUS then step30)
+step31 ldMAR, mxMAR0, mxMAR2, ldMDR, mxMDR0, mxMDR1, mxMDR2, mxMDRGPR, mxSC1
+step32 wrMEM, br(if notFCBUS then step32)
+step33 incSC, br step2D
+//------POPGPR-----
+step34 ldSCN
+step35 br(if SCN then step3E)
+step36 ldMAR, mxMAR2, mxMAR0, incSP
+step37 ldMDR, rdMEM, br(if notFCBUS then step37)
+step38 ldDWL, ldMAR, mxMAR0, mxMAR2, incSP
+step39 rdMEM, ldMDR, br(if notFCBUS then step39)
+step3A ldDWH
+step3B wrGPR, mxSC1, mxSC2, mxGPR2, mxGPR0, decSC, br step35
+//------JLEQ-------
+step3C br(if notbrorjump then step 3E)
+step3D ldPC, mxGPR2, br step3E
+//------INTR-------
+step3E stINTR, clEXEC
+

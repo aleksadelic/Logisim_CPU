@@ -1,0 +1,35 @@
+step00 br(if notADDR step00)
+step01 br(case(immed, memdir, regdir, memind, postincr, pcrelpom)
+	then (immed, step02), (memdir, step03), (regdir, step04), (memind, step06), 
+	(postincr, step0D), (pcrelpom, step11))
+//---------IMMED---------
+step02 ldB, br step18
+//---------MEMDIR--------
+step03 ldMAR, mxMAR0, step12
+//---------REGDIR--------
+step04 br(if STORE then step18)
+step05 ldB, mxB0, br step18
+//---------MEMIND--------
+step06 ldMAR, mxMAR0
+step07 rdMEM, ldMDR, br(if notFCBUS then step07)
+step08 ldDWL, incMAR
+step09 rdMEM, ldMDR, br(if notFCBUS then step09)
+step0A ldDWH
+step0B ldB, mxB1
+step0C ldMAR, mxMAR1, br step12
+//---------POSTINCR-------
+step0D ldMAR, mxMAR0, mxMAR1, ldB, mxB0
+step0E incB
+step0F incB
+step10 wrGPR, br step12
+//---------PCRELPOM-------
+step11 ldMAR, mxMAR2, br step12
+//---------READ-----------
+step12 br(if STORE then step18)
+step13 rdMEM, ldMDR, br(if notFCBUS then step13)
+step14 ldDWL, incMAR
+step15 rdMEM, ldMDR, br(if notFCBUS then step15)
+step16 ldDWH
+step17 ldB, mxB1
+//--------EXEC------------
+step18 clADDR, stEXEC, br step00

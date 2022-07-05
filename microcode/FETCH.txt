@@ -1,0 +1,19 @@
+step00 br(if notPSWSTARTandFETCH then step00)
+step01 ldMAR, incPC
+step02 rdMEM, ldMDR, br(if notFCBUS then step02)
+step03 ldIR31..24
+step04 br(if bezadr1 then step12)
+step05 ldMAR, incPC
+step06 rdMEM, ldMDR , br(if notFCBUS then step06)
+step07 ldIR23..16, br(if jmp2 then step12)
+step08 br(if adr2 then step11)
+step09 br(if grinst then step00)
+step0A ldMAR, incPC
+step0B rdMEM, ldMDR, br(if notFCBUS then step0B)
+step0C ldIR15..8, br(if jmp3 then step12)
+step0D br(id adr3 then step11)
+step0E ldMAR, incPC
+step0F rdMEM, ldMDR, br(if notFCBUS then step0F)
+step10 ldIR7..0
+step11 clFETCH, stADDR, br step00
+step12 clFETCH, stEXEC, br step00

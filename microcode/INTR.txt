@@ -1,0 +1,28 @@
+step00 br(if notINTR then step00)
+step01 br(if notPrekid then step1B)
+step02 decSP, ldMDR, mxMDR0, mxMDR2
+step03 ldMAR, mxMAR0, mxMAR2
+step04 wrMEM, br(if notFCBUS then step04)
+step05 decSP, ldMDR, mxMDR2
+step06 ldMAR, mxMAR0, mxMAR2
+step07 wrMEM, br(if notFCBUS then step07)
+step08 decSP, ldMDR, mxMDR1
+step09 ldMAR, mxMAR0, mxMAR2
+step0A wrMEM, br(if notFCBUS then step0A)
+step0B decSP, ldMDR, mxMDR0
+step0C ldMAR, mxMAR0, mxMAR2
+step0D wrMEM, br(if notFCBUS then step0C)
+step0E decSP, ldMDR, mxMDR2, mxMDR0
+step0F ldMAR, mxMAR0, mxMAR2
+step10 wrMEM, br(if notFCBUS then step10)
+step11 decSP, ldMDR, mxMDR2, mxMDR1 
+step12 ldMAR, mxMAR0, mxMAR2
+step13 wrMEM, br(if notFCBUS then step13)
+step14 ldBR
+step15 ldMAR, mxMAR2, mxMAR0
+step16 wrMEM, br(if notFCBUS then step16)
+step17 incMAR, ldDWl
+step18 rdMEM, ldMDR, br(if notFCBUS then step18)
+step19 ldDWH
+step1A ldPC, mxPC1
+step1B stFETCH, clINTR
